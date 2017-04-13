@@ -1,0 +1,57 @@
+---
+title: "Documentation for My Shiny App"
+subtitle: "A Shiny app which can predict diamond price by carat"
+author: "Yunyi Zhang"
+date: "April 13, 2017"
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction
+
+A diamond price is highly related to its carat, so I have developed a prediction model to predict a diamond's price based on its carat. The following is a sample of the diamond price and carat data:
+```{r}
+library(ggplot2)
+head(diamonds[,c('carat', 'price')])
+```
+
+## Prediction Model
+
+The prediction model used the diamond dataset included in the ggplot2 library. The following code is used to get the prediction model:
+```{r, echo=TRUE}
+library(ggplot2)
+model <- lm(price~carat, data=diamonds)
+summary(model)
+```
+
+## Embed the Prediction Model to Shiny App
+
+I developed a Shiny App, which can let the user input the carat through a slide bar, and then the app will automatically show the price through a black point on a graph. The following is an example of the graph:
+```{r}
+    data_on_plot <- data.frame(carat = seq(from=0.1, to=20, by=0.1))
+    data_on_plot$price <- predict(model, newdata = data_on_plot)
+    rownames(data_on_plot) = seq(from=0.1, to=20, by=0.1)
+    point <-  data_on_plot['12',]
+    ggplot(data=data_on_plot, aes(x=carat, y=price)) + 
+      geom_line() + 
+      geom_point(data=point, size=5, mapping = aes(x=carat, y=price))
+```
+
+
+
+## Reference
+
+For more information about the diamond dataset, please refer to:
+
+https://www.rdocumentation.org/packages/UsingR/versions/2.0-5/topics/diamond
+
+Source code of ui.R and server.R of the Shiny App can be found at:
+
+<a href="https://github.com/zhangyyz/DevelopingDataProductsWeek4PeerReview" target="_blank">https://github.com/zhangyyz/DevelopingDataProductsWeek4PeerReview</a>
+
+
+
+
